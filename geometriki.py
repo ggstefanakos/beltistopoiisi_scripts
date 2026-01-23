@@ -14,18 +14,19 @@ def starting_point_for_2_dimensions(a):
 
 n = 2
 a = 0.3
-M_limit = 0.05*n**2 + 1.65*n
+M_limit = np.round(0.05*n**2 + 1.65*n)
 
 # start = starting_point_for_2_dimensions(a)
 start = np.array([[0.0,0.0],[0.28971,0.07761],[0.07761,0.28971]])
 
 current = start
 M = 1
-best_prev = None
-R_prev = None
+best_prev = np.array([[None,None]])
+R_prev = np.array([[None,None]])
+rule = 1
 i = 3
-
-while M >= M_limit:
+print('i\t|\t\tN\t\t|\tf(n)\t|\trule\t|\tM\t|\tR')
+while M <= M_limit:
 
     z = [f(x) for x in current]
 
@@ -37,7 +38,7 @@ while M >= M_limit:
 
     second_worst = current[np.where(z == np.max(np.delete(z,np.where(z == np.max(z)),axis=0)))] # gia elaxisto
 
-    if best == best_prev:
+    if (best == best_prev).all():
         M += 1
     else:
         M = 1
@@ -46,17 +47,21 @@ while M >= M_limit:
 
     sum_of_all_points = (current.T @ np.ones((n+1,1))).T
     N = (2/n)*sum_of_all_points - 2*R
+    rule = 1
 
     # N = (2/n)*np.sum(np.delete(current,R)) - R # oxi akribos sosto
 
-    if N == R_prev: # kanonas 2
+    if (N == R_prev).all(): # kanonas 2
         R = current[np.where(z == second_worst)]
         sum_of_all_points = (current.T @ np.ones((n+1,1))).T
         N = (2/n)*sum_of_all_points - 2*R
+        rule = 2
     
     R_prev = R
     best_prev = best
-    current = np.delete(current,R,axis=0)
+    current[np.where(current == R)] = N
     i += 1
-
-print(current)
+    # print(f'========={i}=========')
+    # print(current)
+    # print(f'f={z}')
+    print(f'{i}\t|\t{np.round(N,3)}\t|\t{np.round(f(N.flatten()),3)}\t|\t{rule}\t|\t{M}\t|\t{np.round(R,3)}')
