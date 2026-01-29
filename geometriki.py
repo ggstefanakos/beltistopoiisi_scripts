@@ -50,12 +50,16 @@ start = starting_shape_for_2_dimensions(a)
 current = start
 M = 1
 
-if goal == 'min': z_start = [f(x) for x in start]
-if goal == 'max': z_start = [-1*f(x) for x in start]
+z_start = [f(x) for x in start]
+if goal == 'min':
+    best = start[np.where(z_start == np.min(z_start))]
+    worst = current[np.where(z_start == np.max(z_start))]
+    second_worst = current[np.where(z_start == np.max(np.delete(z_start,np.where(z_start == np.max(z_start)),axis=0)))]
 
-best = start[np.where(z_start == np.min(z_start))]
-worst = current[np.where(z_start == np.max(z_start))]
-second_worst = current[np.where(z_start == np.max(np.delete(z_start,np.where(z_start == np.max(z_start)),axis=0)))]
+if goal == 'max':
+    best = start[np.where(z_start == np.max(z_start))]
+    worst = current[np.where(z_start == np.min(z_start))]
+    second_worst = current[np.where(z_start == np.min(np.delete(z_start,np.where(z_start == np.min(z_start)),axis=0)))]
 
 best_prev = best
 R_prev = start[0] + np.array([[1000,1000]]) # random huge values that are for sure diferrent than the ones in start
@@ -90,14 +94,22 @@ while M < M_limit: # Geometric Method
     R_prev = R
     best_prev = best
     
-    if goal == 'min': z = [f(x) for x in current]
-    if goal == 'max': z = [-1*f(x) for x in current]
+    z = [f(x) for x in current]
 
-    best = current[np.where(z == np.min(z))]
+    if goal == 'min':
+        best = current[np.where(z == np.min(z))]
 
-    worst = current[np.where(z == np.max(z))]
+        worst = current[np.where(z == np.max(z))]
 
-    second_worst = current[np.where(z == np.max(np.delete(z,np.where(z == np.max(z)),axis=0)))]
+        second_worst = current[np.where(z == np.max(np.delete(z,np.where(z == np.max(z)),axis=0)))]
+    if goal == 'max':
+        best = current[np.where(z == np.max(z))]
+
+        worst = current[np.where(z == np.min(z))]
+
+        second_worst = current[np.where(z == np.min(np.delete(z,np.where(z == np.min(z)),axis=0)))]
+
+    
 
     if (best == best_prev).all():
         M += 1
