@@ -6,21 +6,41 @@ def f(x):
     Objective Function
 
     x : ndarray shape(n,) n = number of dimensions
-    Vector of function variables
+        Vector of function variables
     '''
-    f = 2*x[0]**2 + 10*x[1]**2 + 3*np.sin(x[0]) + 8*np.cos(x[1]) -10
+    # f = 2*x[0]**2 + 10*x[1]**2 + 3*np.sin(x[0]) + 8*np.cos(x[1]) -10
+    f = x[0]**2 + x[1]**2 + x[2]**2
 
     return f
 
-def starting_shape_for_2_dimensions(a):
+def starting_shape_for_3_dimensions(a,first_point):
+    '''
+    Generates starting triangle points for 3 dimensional research
+
+    a : float
+        Error margin/Polygon vertice length
+    first_point : ndarray, shape(n,) n = number of dimensions
+        The first point in the research
+    '''
+    alpha = first_point
+    beta = np.array([alpha[0]+a*np.cos(np.deg2rad(15)),alpha[1]+a*np.sin(np.deg2rad(15)),alpha[2]+0])
+    gama = np.array([beta[1],beta[0],beta[2]])
+    delta = np.array([alpha[0]+np.sqrt(3)*a/4,alpha[1]+np.sqrt(3)*a/4,alpha[2]+a*np.sqrt(6)/2])
+    # delta = np.array([alpha[0]+np.sqrt(3)*a/4,alpha[1]+np.sqrt(3)*a/4,alpha[2]+a*np.sqrt(13)/4]) # mallon lathos
+
+    return np.array([alpha,beta,gama,delta])
+
+def starting_shape_for_2_dimensions(a,fisrt_point):
     '''
     Generates starting triangle points for 2 dimensional research
 
     a : float
-    Error margin/Polygon vertice length
+        Error margin/Polygon vertice length
+    first_point : ndarray, shape(n,) n = number of dimensions
+        The first point in the research
     '''
-    alpha = np.array([0,0])
-    beta = np.array([a*np.cos(np.deg2rad(15)),a*np.sin(np.deg2rad(15))])
+    alpha = fisrt_point
+    beta = np.array([alpha[0]+a*np.cos(np.deg2rad(15)),alpha[1]+a*np.sin(np.deg2rad(15))])
     gama = np.array([beta[1],beta[0]])
 
     return np.array([alpha,beta,gama])
@@ -30,7 +50,7 @@ def round_up(x):
     Calculates the next integer from a float (rounds up)
 
     x : float
-    Any float
+        Any float
     '''
     decimals = x - int(x)
     if np.isclose(decimals,0):
@@ -39,13 +59,14 @@ def round_up(x):
         return int(x) + 1
 
 rounding_decs = 3 # Number of decimals on the display (the calculations use more decimals)
-n = 2 # Number of dimensions
+n = 3 # Number of dimensions
 a = 0.3 # Error margin
 goal = 'min'
 M_limit = round_up(0.05*n**2 + 1.65*n) # Max number of iterations with the same best value
 
-start = starting_shape_for_2_dimensions(a)
+# start = starting_shape_for_2_dimensions(a,np.array([0.0,0.0]))
 # start = np.array([[0.0,0.0],[0.28971,0.07761],[0.07761,0.28971]]) # same as line above
+start = starting_shape_for_3_dimensions(a,np.array([3,3,3]))
 
 current = start
 M = 1
@@ -62,7 +83,8 @@ if goal == 'max':
     second_worst = current[np.where(z_start == np.min(np.delete(z_start,np.where(z_start == np.min(z_start)),axis=0)))]
 
 best_prev = best
-R_prev = start[0] + np.array([[1000,1000]]) # random huge values that are for sure diferrent than the ones in start
+# R_prev = start[0] + np.array([[1000,1000]]) # random huge values that are for sure diferrent than the ones in start
+R_prev = start[0] + np.array([[1000,1000,1000]])
 rule = 0 # Rule number
 i = 1 # Point/iteration number
 
