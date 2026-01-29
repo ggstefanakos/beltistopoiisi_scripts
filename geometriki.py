@@ -25,7 +25,7 @@ def starting_shape_for_2_dimensions(a):
 
     return np.array([alpha,beta,gama])
 
-def next_int(x):
+def round_up(x):
     '''
     Calculates the next integer from a float (rounds up)
 
@@ -38,31 +38,52 @@ def next_int(x):
     else:
         return int(x) + 1
 
-rounding_decs = 3
+rounding_decs = 3 # Number of decimals on the display (the calculations use more decimals)
 n = 2 # Number of dimensions
 a = 0.3 # Error margin
-M_limit = next_int(0.05*n**2 + 1.65*n) # Max number of iterations with the same best value
+M_limit = round_up(0.05*n**2 + 1.65*n) # Max number of iterations with the same best value
 
 start = starting_shape_for_2_dimensions(a)
 # start = np.array([[0.0,0.0],[0.28971,0.07761],[0.07761,0.28971]]) # same as line above
 
-# print('i\t|\t\tN\t\t|\tf(n)\t|\trule\t|\tM\t|\t\tR\t\t|\tWorking polygon')
-
 current = start
 M = 1
-best_prev = start[0] + np.array([[2000,2000]]) # random huge values that are for sure diferrent than the ines in start
-R_prev = start[0] + np.array([[1000,1000]])
+z_start = [f(x) for x in start] # for minimum
+# z_start = [-1*f(x) for x in start] # for maximum
+best = start[np.where(z_start == np.min(z_start))]
+worst = current[np.where(z_start == np.max(z_start))]
+second_worst = current[np.where(z_start == np.max(np.delete(z_start,np.where(z_start == np.max(z_start)),axis=0)))]
+
+best_prev = best
+R_prev = start[0] + np.array([[1000,1000]]) # random huge values that are for sure diferrent than the ones in start
 rule = 0
-i = 1
-myTable = PrettyTable(["i","N","f(x)","rule","M","R","Working polygon"])
+i = 1 # Point/iteration number
+myTable = PrettyTable(["i","N","f(N)","R","rule","Working polygon","Best","M"])
 
 for x in start:
-    # print(f'{i}\t|\t\t-\t\t|\t{np.round(f(x),rounding_decs)}\t|\t-\t|\t-\t|\t\t-\t\t|\t\t-')
-    myTable.add_row([i,"-",np.round(f(x),rounding_decs),"-","-","-","-"])
+    if (x != start[-1]).all():
+        myTable.add_row([i,np.round(x,rounding_decs),np.round(f(x),rounding_decs),"-","-","-","-",'-'])
+    else:
+        myTable.add_row([i,np.round(x,rounding_decs),np.round(f(x),rounding_decs),"-","-",np.round(start.flatten(),rounding_decs),np.round(best.flatten(),rounding_decs),M])
     i += 1
 
 while M < M_limit:
 
+    R = worst # Rule 1
+
+    sum_of_all_points = (current.T @ np.ones((n+1,1))).T
+    N = (2/n)*sum_of_all_points - 2*R
+    rule = 1
+
+    if np.allclose(N,R_prev): # Rule 2
+        R = second_worst
+        N = (2/n)*sum_of_all_points - 2*R
+        rule = 2
+    
+    current[np.where(current == R)] = N
+    R_prev = R
+    best_prev = best
+    
     z = [f(x) for x in current] # for minimum
     # z = [-1*f(x) for x in current] # for maximum
 
@@ -74,28 +95,12 @@ while M < M_limit:
 
     if (best == best_prev).all():
         M += 1
-        if M > M_limit: break
     else:
         M = 1
 
-    R = worst # kanonas 1
-
-    sum_of_all_points = (current.T @ np.ones((n+1,1))).T
-    N = (2/n)*sum_of_all_points - 2*R
-    rule = 1
-
-    if np.allclose(N,R_prev): # kanonas 2
-        R = second_worst
-        N = (2/n)*sum_of_all_points - 2*R
-        rule = 2
-    
+    myTable.add_row([i,np.round(N.flatten(),rounding_decs),np.round(f(N.flatten()),rounding_decs),np.round(R.flatten(),rounding_decs),rule,np.round(current.flatten(),rounding_decs),np.round(best.flatten(),rounding_decs),M])
     i += 1
-    # print(f'{i}\t|\t{np.round(N,rounding_decs)}\t|\t{np.round(f(N.flatten()),rounding_decs)}\t|\t{rule}\t|\t{M}\t|\t{np.round(R,rounding_decs)}\t|\t\t{np.round(current.flatten(),rounding_decs)}')
-    myTable.add_row([i,np.round(N,rounding_decs),np.round(f(N.flatten()),rounding_decs),rule,M,np.round(R,rounding_decs),np.round(current.flatten(),rounding_decs)])
-
-    R_prev = R
-    best_prev = best
-    current[np.where(current == R)] = N
+    
 
     
 print(myTable)
