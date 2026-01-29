@@ -1,4 +1,5 @@
 import numpy as np
+from prettytable import PrettyTable
 
 def f(x):
     '''
@@ -26,7 +27,7 @@ def starting_shape_for_2_dimensions(a):
 
 def next_int(x):
     '''
-    Calculates the next integer from a float
+    Calculates the next integer from a float (rounds up)
 
     x : float
     Any float
@@ -45,7 +46,7 @@ M_limit = next_int(0.05*n**2 + 1.65*n) # Max number of iterations with the same 
 start = starting_shape_for_2_dimensions(a)
 # start = np.array([[0.0,0.0],[0.28971,0.07761],[0.07761,0.28971]]) # same as line above
 
-print('i\t|\t\tN\t\t|\tf(n)\t|\trule\t|\tM\t|\t\tR')
+# print('i\t|\t\tN\t\t|\tf(n)\t|\trule\t|\tM\t|\t\tR\t\t|\tWorking polygon')
 
 current = start
 M = 1
@@ -53,9 +54,11 @@ best_prev = start[0] + np.array([[2000,2000]]) # random huge values that are for
 R_prev = start[0] + np.array([[1000,1000]])
 rule = 0
 i = 1
+myTable = PrettyTable(["i","N","f(x)","rule","M","R","Working polygon"])
 
 for x in start:
-    print(f'{i}\t|\t\t-\t\t|\t{np.round(f(x),rounding_decs)}\t|\t-\t|\t-\t|\t-')
+    # print(f'{i}\t|\t\t-\t\t|\t{np.round(f(x),rounding_decs)}\t|\t-\t|\t-\t|\t\t-\t\t|\t\t-')
+    myTable.add_row([i,"-",np.round(f(x),rounding_decs),"-","-","-","-"])
     i += 1
 
 while M < M_limit:
@@ -87,13 +90,14 @@ while M < M_limit:
         rule = 2
     
     i += 1
-    print(f'{i}\t|\t{np.round(N,rounding_decs)}\t|\t{np.round(f(N.flatten()),rounding_decs)}\t|\t{rule}\t|\t{M}\t|\t{np.round(R,rounding_decs)}')
+    # print(f'{i}\t|\t{np.round(N,rounding_decs)}\t|\t{np.round(f(N.flatten()),rounding_decs)}\t|\t{rule}\t|\t{M}\t|\t{np.round(R,rounding_decs)}\t|\t\t{np.round(current.flatten(),rounding_decs)}')
+    myTable.add_row([i,np.round(N,rounding_decs),np.round(f(N.flatten()),rounding_decs),rule,M,np.round(R,rounding_decs),np.round(current.flatten(),rounding_decs)])
 
     R_prev = R
     best_prev = best
     current[np.where(current == R)] = N
 
     
-
+print(myTable)
 print(f'\nMin of f(x) in x = ({np.round(best_prev[0,0],rounding_decs)} \u00b1 {a}, {np.round(best_prev[0,1],rounding_decs)} \u00b1 {a})^T')
 print(f'Where f(x) = {np.round(f(best_prev.flatten()),rounding_decs)}')
