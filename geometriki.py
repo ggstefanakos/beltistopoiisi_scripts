@@ -62,7 +62,7 @@ if goal == 'max':
     second_worst = current[np.where(z_start == np.min(np.delete(z_start,np.where(z_start == np.min(z_start)),axis=0)))]
 
 best_prev = best
-R_prev = start[0] + np.array([[1000,1000]]) # random huge values that are for sure diferrent than the ones in start
+R_prev = start[0] + np.array([[1000 for _ in range(n)]]) # random huge values that are for sure diferrent than the ones in start
 rule = 0 # Rule number
 i = 1 # Point/iteration number
 
