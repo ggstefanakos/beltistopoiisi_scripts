@@ -56,11 +56,12 @@ second_worst = current[np.where(z_start == np.max(np.delete(z_start,np.where(z_s
 
 best_prev = best
 R_prev = start[0] + np.array([[1000,1000]]) # random huge values that are for sure diferrent than the ones in start
-rule = 0
+rule = 0 # Rule number
 i = 1 # Point/iteration number
-myTable = PrettyTable(["i","N","f(N)","R","rule","Working polygon","Best","M"])
 
-for x in start:
+myTable = PrettyTable(["i","N","f(N)","R","rule","Working polygon","Best","M"]) # Table headers
+
+for x in start: # First rows of table
     if (x != start[-1]).all():
         myTable.add_row([i,np.round(x,rounding_decs),np.round(f(x),rounding_decs),"-","-","-","-",'-'])
     else:
@@ -68,7 +69,8 @@ for x in start:
         myTable.add_row([i,np.round(x,rounding_decs),np.round(f(x),rounding_decs),"-","-",str_polygon.replace('\n',''),np.round(best.flatten(),rounding_decs),M])
     i += 1
 
-while M < M_limit:
+
+while M < M_limit: # Geometric Method
 
     R = worst # Rule 1
 
@@ -101,9 +103,8 @@ while M < M_limit:
     str_polygon = str(np.round(current,rounding_decs))
     myTable.add_row([i,np.round(N.flatten(),rounding_decs),np.round(f(N.flatten()),rounding_decs),np.round(R.flatten(),rounding_decs),rule,str_polygon.replace('\n',''),np.round(best.flatten(),rounding_decs),M])
     i += 1
-    
 
     
 print(myTable)
-print(f'\nMin of f(x) in x = ({np.round(best_prev[0,0],rounding_decs)} \u00b1 {a}, {np.round(best_prev[0,1],rounding_decs)} \u00b1 {a})^T')
-print(f'Where f(x) = {np.round(f(best_prev.flatten()),rounding_decs)}')
+print(f'\nMin of f(x) in x = ({np.round(best[0,0],rounding_decs)} \u00b1 {a}, {np.round(best[0,1],rounding_decs)} \u00b1 {a})^T')
+print(f'Where f(x) = {np.round(f(best.flatten()),rounding_decs)}')
