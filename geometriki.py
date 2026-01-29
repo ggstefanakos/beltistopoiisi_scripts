@@ -64,7 +64,8 @@ for x in start:
     if (x != start[-1]).all():
         myTable.add_row([i,np.round(x,rounding_decs),np.round(f(x),rounding_decs),"-","-","-","-",'-'])
     else:
-        myTable.add_row([i,np.round(x,rounding_decs),np.round(f(x),rounding_decs),"-","-",np.round(start.flatten(),rounding_decs),np.round(best.flatten(),rounding_decs),M])
+        str_polygon = str(np.round(start,rounding_decs))
+        myTable.add_row([i,np.round(x,rounding_decs),np.round(f(x),rounding_decs),"-","-",str_polygon.replace('\n',''),np.round(best.flatten(),rounding_decs),M])
     i += 1
 
 while M < M_limit:
@@ -97,8 +98,8 @@ while M < M_limit:
         M += 1
     else:
         M = 1
-
-    myTable.add_row([i,np.round(N.flatten(),rounding_decs),np.round(f(N.flatten()),rounding_decs),np.round(R.flatten(),rounding_decs),rule,np.round(current.flatten(),rounding_decs),np.round(best.flatten(),rounding_decs),M])
+    str_polygon = str(np.round(current,rounding_decs))
+    myTable.add_row([i,np.round(N.flatten(),rounding_decs),np.round(f(N.flatten()),rounding_decs),np.round(R.flatten(),rounding_decs),rule,str_polygon.replace('\n',''),np.round(best.flatten(),rounding_decs),M])
     i += 1
     
 
