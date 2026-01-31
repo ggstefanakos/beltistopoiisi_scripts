@@ -8,7 +8,8 @@ def f(x):
     x : ndarray shape(n,) n = number of dimensions
     Vector of function variables
     '''
-    f = 2*x[0]**2 + 10*x[1]**2 + 3*np.sin(x[0]) + 8*np.cos(x[1]) -10
+    # f = 2*x[0]**2 + 10*x[1]**2 + 3*np.sin(x[0]) + 8*np.cos(x[1]) -10 # has min
+    f = 10 - ((1-x[0])**2 + (x[1] - x[0]**2/10 - 1)**2) # has max
 
     return f
 
@@ -41,7 +42,7 @@ def round_up(x):
 rounding_decs = 3 # Number of decimals on the display (the calculations use more decimals)
 n = 2 # Number of dimensions
 a = 0.3 # Error margin
-goal = 'min'
+goal = 'Max' # or Min
 M_limit = round_up(0.05*n**2 + 1.65*n) # Max number of iterations with the same best value
 
 start = starting_shape_for_2_dimensions(a)
@@ -51,12 +52,12 @@ current = start
 M = 1
 
 z_start = [f(x) for x in start]
-if goal == 'min':
+if goal == 'Min':
     best = start[np.where(z_start == np.min(z_start))]
     worst = current[np.where(z_start == np.max(z_start))]
     second_worst = current[np.where(z_start == np.max(np.delete(z_start,np.where(z_start == np.max(z_start)),axis=0)))]
 
-if goal == 'max':
+if goal == 'Max':
     best = start[np.where(z_start == np.max(z_start))]
     worst = current[np.where(z_start == np.min(z_start))]
     second_worst = current[np.where(z_start == np.min(np.delete(z_start,np.where(z_start == np.min(z_start)),axis=0)))]
@@ -96,13 +97,13 @@ while M < M_limit: # Geometric Method
     
     z = [f(x) for x in current]
 
-    if goal == 'min':
+    if goal == 'Min':
         best = current[np.where(z == np.min(z))]
 
         worst = current[np.where(z == np.max(z))]
 
         second_worst = current[np.where(z == np.max(np.delete(z,np.where(z == np.max(z)),axis=0)))]
-    if goal == 'max':
+    if goal == 'Max':
         best = current[np.where(z == np.max(z))]
 
         worst = current[np.where(z == np.min(z))]
@@ -121,5 +122,5 @@ while M < M_limit: # Geometric Method
 
     
 print(myTable)
-print(f'\nMin of f(x) in x = ({np.round(best[0,0],rounding_decs)} \u00b1 {a}, {np.round(best[0,1],rounding_decs)} \u00b1 {a})^T')
+print(f'\n{goal} of f(x) in x = ({np.round(best[0,0],rounding_decs)} \u00b1 {a}, {np.round(best[0,1],rounding_decs)} \u00b1 {a})^T')
 print(f'Where f(x) = {np.round(f(best.flatten()),rounding_decs)}')
