@@ -8,8 +8,8 @@ def f(x):
     x : ndarray shape(n,) n = number of dimensions
     Vector of function variables
     '''
-    # f = 2*x[0]**2 + 10*x[1]**2 + 3*np.sin(x[0]) + 8*np.cos(x[1]) -10 # has min
-    f = 10 - ((1-x[0])**2 + (x[1] - x[0]**2/10 - 1)**2) # has max
+    f = 2*x[0]**2 + 10*x[1]**2 + 3*np.sin(x[0]) + 8*np.cos(x[1]) -10 # has min
+    # f = 10 - ((1-x[0])**2 + (x[1] - x[0]**2/10 - 1)**2) # has max
 
     return f
 
@@ -42,7 +42,7 @@ def round_up(x):
 rounding_decs = 3 # Number of decimals on the display (the calculations use more decimals)
 n = 2 # Number of dimensions
 a = 0.3 # Error margin
-goal = 'Max' # or Min
+goal = 'Min' # or Max
 M_limit = round_up(0.05*n**2 + 1.65*n) # Max number of iterations with the same best value
 
 start = starting_shape_for_2_dimensions(a)
