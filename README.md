@@ -16,10 +16,10 @@
 
 ![][output_terminal_1]
 
+Η ίδια συνάρτηση με την λύση σε χαρτί (by @JFK).
+![][paper_solution_1]
 
-![Η ίδια συνάρτηση με την λύση σε χαρτί (by @JFK).][paper_solution_1]
 
 
-
-[output_terminal_1]: [geometriki_output.png]
-[paper_solution_1]: [IMG_2669.jpg]
+[output_terminal_1]: geometriki_output.png
+[paper_solution_1]: IMG_2669.jpg
