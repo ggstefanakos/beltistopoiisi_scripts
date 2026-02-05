@@ -9,8 +9,8 @@ def f(x):
         Vector of function variables
     '''
     # f = 2*x[0]**2 + 10*x[1]**2 + 3*np.sin(x[0]) + 8*np.cos(x[1]) -10
-    # f = (x[0]-1)**2 + (x[1]-1)**2 + (x[2]-1)**2 # has min
-    f = x[0]**2 + x[1]**2 + x[2]**2 # has min
+    f = (x[0]-1)**2 + (x[1]-1)**2 + (x[2]-1)**2 # has min
+    # f = x[0]**2 + x[1]**2 + x[2]**2 # has min
 
     return f
 
@@ -46,6 +46,35 @@ def starting_shape_for_2_dimensions(a,fisrt_point):
 
     return np.array([alpha,beta,gama])
 
+def starting_shape(n,a):
+    '''
+    Generates starting shape points for n dimensional research
+
+    Parameters
+    ----------
+    n : int
+        Number of dimensions
+    a : float
+        Error margin/Polygon vertice length
+    Returns
+    -------
+    start : ndarray, shape (n+1,n)
+        Starting shape
+    '''
+    # p = (a/(n*np.sqrt(2)))*(np.sqrt(n+1)+n-1)
+    q = (a/(n*np.sqrt(2)))*(np.sqrt(n+1) - 1)
+    qs = q * np.ones((n,n))
+
+    ps = np.diag([a/np.sqrt(2) for _ in range(n)])
+    
+    start = np.zeros((n+1,n))
+
+    start[1:,:] = qs + ps #diastaseis?????????
+
+    # start[0] = np.zeros((n,))
+
+    return start
+
 def round_up(x):
     '''
     Calculates the next integer from a float (rounds up)
@@ -67,7 +96,8 @@ goal = 'Min' # or Max
 
 # start = starting_shape_for_2_dimensions(a,np.array([0.0,0.0]))
 # start = np.array([[0.0,0.0],[0.28971,0.07761],[0.07761,0.28971]]) # same as line above
-start = starting_shape_for_3_dimensions(a,np.array([100,100,100]))
+# start = starting_shape_for_3_dimensions(a,np.array([100,100,100]))
+start = starting_shape(3,a)
 n = start.shape[1] # Number of dimensions
 M_limit = round_up(0.05*n**2 + 1.65*n) # Max number of iterations with the same best value
 current = start.copy()
